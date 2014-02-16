@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head> 
+        <meta charset="utf-8" />
+        <style>
+            body {
+                    padding: 0;
+                        margin: 0;
+                    }
+                    html, body{
+                            height: 100%;
+                        }
+                    }
+            }
+        </style>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+        <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+    </head>
+    <body>
+        <div id="map" style="width: 75%; height: 100%"></div>
+        <input type="radio" name="layer" value="Marker" checked> Marker<br>
+        <input type="radio" name="layer" value="Polygons"> Polygones<br>
+
+        <script>
+            var mapLayer = L.tileLayer.wms('http://fbinter.stadt-berlin.de/fb/wms/senstadt/berlinzoom', { layers: '0', format: 'image/png', crs: L.CRS.EPSG4326 });
+            var map = L.map('map', {layers: [mapLayer]}).setView([52.52,13.384], 11); //Grundkartenelement erzeugen
+            var polygon = [];
+
+            var baseMaps = { 
+                'Karte': mapLayer
+            }
+
+            L.control.layers(baseMaps).addTo(map);
+            var popup = L.popup();
+
+            function getActiveLayer() {
+                var elements = document.getElementsByName('layer');
+                for (i=0;i<elements.length;i++) {
+                    if(elements[i].checked === true) {
+                        return elements[i].value;
+                    }
+                }
+            }
+
+            function onMapClick(e) {
+                if(getActiveLayer() === 'Marker')
+                {
+                    popup.setLatLng(e.latlng)
+                    .setContent("You clicked the map at " + e.latlng.toString())
+                    .openOn(map);
+
+                    L.marker(e.latlng).addTo(map);
+                }
+                else {
+                    
+                }
+            }
+
+            map.on('click', onMapClick);
+        </script>
+    </body>
+</html>
